@@ -23,6 +23,8 @@ export async function GET(_request: Request, { params }: Params) {
   return NextResponse.json({
     title: note.title,
     content: note.content,
+    note_type: note.noteType,
+    code_language: note.codeLanguage,
     tags: parseTags(note.tags),
     category: note.category,
     author: note.user.name,

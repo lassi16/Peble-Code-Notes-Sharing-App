@@ -424,6 +424,7 @@ export type AiUsageCreateOrConnectWithoutUserInput = {
 
 export type AiUsageCreateManyUserInputEnvelope = {
   data: Prisma.AiUsageCreateManyUserInput | Prisma.AiUsageCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type AiUsageUpsertWithWhereUniqueWithoutUserInput = {
@@ -474,6 +475,7 @@ export type AiUsageCreateOrConnectWithoutNoteInput = {
 
 export type AiUsageCreateManyNoteInputEnvelope = {
   data: Prisma.AiUsageCreateManyNoteInput | Prisma.AiUsageCreateManyNoteInput[]
+  skipDuplicates?: boolean
 }
 
 export type AiUsageUpsertWithWhereUniqueWithoutNoteInput = {
@@ -1278,6 +1280,7 @@ export type AiUsageCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * The data used to create many AiUsages.
    */
   data: Prisma.AiUsageCreateManyInput | Prisma.AiUsageCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1296,6 +1299,7 @@ export type AiUsageCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensi
    * The data used to create many AiUsages.
    */
   data: Prisma.AiUsageCreateManyInput | Prisma.AiUsageCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

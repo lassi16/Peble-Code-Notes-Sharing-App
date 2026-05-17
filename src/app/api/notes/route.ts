@@ -54,16 +54,25 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}));
   const tags = body.tags ? stringifyTags(body.tags) : "[]";
+  const noteType = body.noteType === "code" ? "code" : "normal";
 
-  const note = await prisma.note.create({
-    data: {
-      userId: user.id,
-      title: body.title?.trim() || "Untitled",
-      content: body.content ?? "",
-      tags,
-      category: body.category?.trim() || "general",
-    },
-  });
+  try {
+    const note = await prisma.note.create({
+      data: {
+        title: String(body.title ?? "Untitled").trim() || "Untitled",
+        content: String(body.content ?? ""),
+        tags,
+        noteType,
+        userId: user.id,
+      },
+    });
 
-  return NextResponse.json({ note: toNoteListItem(note) }, { status: 201 });
+    return NextResponse.json({ note: toNoteListItem(note) }, { status: 201 });
+  } catch (error) {
+    console.error("Error creating note:", error);
+    return NextResponse.json(
+      { error: "Failed to create note" },
+      { status: 500 }
+    );
+  }
 }

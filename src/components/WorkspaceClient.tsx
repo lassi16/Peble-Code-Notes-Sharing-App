@@ -58,7 +58,8 @@ export function WorkspaceClient() {
     const data = await res.json();
     if (res.ok) {
       await fetchNotes();
-      setSelectedId(data.note.note_id);
+      const createdId = data?.note?.note_id ?? data?.note?.id;
+      if (createdId) setSelectedId(createdId);
     }
   }, [fetchNotes]);
 

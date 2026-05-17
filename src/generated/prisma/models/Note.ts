@@ -29,6 +29,8 @@ export type NoteMinAggregateOutputType = {
   userId: string | null
   title: string | null
   content: string | null
+  noteType: string | null
+  codeLanguage: string | null
   tags: string | null
   category: string | null
   archived: boolean | null
@@ -46,6 +48,8 @@ export type NoteMaxAggregateOutputType = {
   userId: string | null
   title: string | null
   content: string | null
+  noteType: string | null
+  codeLanguage: string | null
   tags: string | null
   category: string | null
   archived: boolean | null
@@ -63,6 +67,8 @@ export type NoteCountAggregateOutputType = {
   userId: number
   title: number
   content: number
+  noteType: number
+  codeLanguage: number
   tags: number
   category: number
   archived: number
@@ -82,6 +88,8 @@ export type NoteMinAggregateInputType = {
   userId?: true
   title?: true
   content?: true
+  noteType?: true
+  codeLanguage?: true
   tags?: true
   category?: true
   archived?: true
@@ -99,6 +107,8 @@ export type NoteMaxAggregateInputType = {
   userId?: true
   title?: true
   content?: true
+  noteType?: true
+  codeLanguage?: true
   tags?: true
   category?: true
   archived?: true
@@ -116,6 +126,8 @@ export type NoteCountAggregateInputType = {
   userId?: true
   title?: true
   content?: true
+  noteType?: true
+  codeLanguage?: true
   tags?: true
   category?: true
   archived?: true
@@ -206,6 +218,8 @@ export type NoteGroupByOutputType = {
   userId: string
   title: string
   content: string
+  noteType: string
+  codeLanguage: string
   tags: string
   category: string
   archived: boolean
@@ -244,6 +258,8 @@ export type NoteWhereInput = {
   userId?: Prisma.StringFilter<"Note"> | string
   title?: Prisma.StringFilter<"Note"> | string
   content?: Prisma.StringFilter<"Note"> | string
+  noteType?: Prisma.StringFilter<"Note"> | string
+  codeLanguage?: Prisma.StringFilter<"Note"> | string
   tags?: Prisma.StringFilter<"Note"> | string
   category?: Prisma.StringFilter<"Note"> | string
   archived?: Prisma.BoolFilter<"Note"> | boolean
@@ -263,6 +279,8 @@ export type NoteOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  noteType?: Prisma.SortOrder
+  codeLanguage?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   category?: Prisma.SortOrder
   archived?: Prisma.SortOrder
@@ -286,6 +304,8 @@ export type NoteWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Note"> | string
   title?: Prisma.StringFilter<"Note"> | string
   content?: Prisma.StringFilter<"Note"> | string
+  noteType?: Prisma.StringFilter<"Note"> | string
+  codeLanguage?: Prisma.StringFilter<"Note"> | string
   tags?: Prisma.StringFilter<"Note"> | string
   category?: Prisma.StringFilter<"Note"> | string
   archived?: Prisma.BoolFilter<"Note"> | boolean
@@ -304,6 +324,8 @@ export type NoteOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  noteType?: Prisma.SortOrder
+  codeLanguage?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   category?: Prisma.SortOrder
   archived?: Prisma.SortOrder
@@ -327,6 +349,8 @@ export type NoteScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Note"> | string
   title?: Prisma.StringWithAggregatesFilter<"Note"> | string
   content?: Prisma.StringWithAggregatesFilter<"Note"> | string
+  noteType?: Prisma.StringWithAggregatesFilter<"Note"> | string
+  codeLanguage?: Prisma.StringWithAggregatesFilter<"Note"> | string
   tags?: Prisma.StringWithAggregatesFilter<"Note"> | string
   category?: Prisma.StringWithAggregatesFilter<"Note"> | string
   archived?: Prisma.BoolWithAggregatesFilter<"Note"> | boolean
@@ -343,6 +367,8 @@ export type NoteCreateInput = {
   id?: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -362,6 +388,8 @@ export type NoteUncheckedCreateInput = {
   userId: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -379,6 +407,8 @@ export type NoteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -398,6 +428,8 @@ export type NoteUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -416,6 +448,8 @@ export type NoteCreateManyInput = {
   userId: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -432,6 +466,8 @@ export type NoteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -449,6 +485,8 @@ export type NoteUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -476,6 +514,8 @@ export type NoteCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  noteType?: Prisma.SortOrder
+  codeLanguage?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   category?: Prisma.SortOrder
   archived?: Prisma.SortOrder
@@ -493,6 +533,8 @@ export type NoteMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  noteType?: Prisma.SortOrder
+  codeLanguage?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   category?: Prisma.SortOrder
   archived?: Prisma.SortOrder
@@ -510,6 +552,8 @@ export type NoteMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   title?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  noteType?: Prisma.SortOrder
+  codeLanguage?: Prisma.SortOrder
   tags?: Prisma.SortOrder
   category?: Prisma.SortOrder
   archived?: Prisma.SortOrder
@@ -597,6 +641,8 @@ export type NoteCreateWithoutUserInput = {
   id?: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -614,6 +660,8 @@ export type NoteUncheckedCreateWithoutUserInput = {
   id?: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -634,6 +682,7 @@ export type NoteCreateOrConnectWithoutUserInput = {
 
 export type NoteCreateManyUserInputEnvelope = {
   data: Prisma.NoteCreateManyUserInput | Prisma.NoteCreateManyUserInput[]
+  skipDuplicates?: boolean
 }
 
 export type NoteUpsertWithWhereUniqueWithoutUserInput = {
@@ -660,6 +709,8 @@ export type NoteScalarWhereInput = {
   userId?: Prisma.StringFilter<"Note"> | string
   title?: Prisma.StringFilter<"Note"> | string
   content?: Prisma.StringFilter<"Note"> | string
+  noteType?: Prisma.StringFilter<"Note"> | string
+  codeLanguage?: Prisma.StringFilter<"Note"> | string
   tags?: Prisma.StringFilter<"Note"> | string
   category?: Prisma.StringFilter<"Note"> | string
   archived?: Prisma.BoolFilter<"Note"> | boolean
@@ -676,6 +727,8 @@ export type NoteCreateWithoutAiUsagesInput = {
   id?: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -694,6 +747,8 @@ export type NoteUncheckedCreateWithoutAiUsagesInput = {
   userId: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -726,6 +781,8 @@ export type NoteUpdateWithoutAiUsagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -744,6 +801,8 @@ export type NoteUncheckedUpdateWithoutAiUsagesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -760,6 +819,8 @@ export type NoteCreateManyUserInput = {
   id?: string
   title?: string
   content?: string
+  noteType?: string
+  codeLanguage?: string
   tags?: string
   category?: string
   archived?: boolean
@@ -776,6 +837,8 @@ export type NoteUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -793,6 +856,8 @@ export type NoteUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -810,6 +875,8 @@ export type NoteUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  noteType?: Prisma.StringFieldUpdateOperationsInput | string
+  codeLanguage?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
   archived?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -858,6 +925,8 @@ export type NoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   userId?: boolean
   title?: boolean
   content?: boolean
+  noteType?: boolean
+  codeLanguage?: boolean
   tags?: boolean
   category?: boolean
   archived?: boolean
@@ -878,6 +947,8 @@ export type NoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userId?: boolean
   title?: boolean
   content?: boolean
+  noteType?: boolean
+  codeLanguage?: boolean
   tags?: boolean
   category?: boolean
   archived?: boolean
@@ -896,6 +967,8 @@ export type NoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   userId?: boolean
   title?: boolean
   content?: boolean
+  noteType?: boolean
+  codeLanguage?: boolean
   tags?: boolean
   category?: boolean
   archived?: boolean
@@ -914,6 +987,8 @@ export type NoteSelectScalar = {
   userId?: boolean
   title?: boolean
   content?: boolean
+  noteType?: boolean
+  codeLanguage?: boolean
   tags?: boolean
   category?: boolean
   archived?: boolean
@@ -926,7 +1001,7 @@ export type NoteSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "content" | "tags" | "category" | "archived" | "isPublic" | "shareId" | "aiSummary" | "aiActionItems" | "suggestedTitle" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
+export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "content" | "noteType" | "codeLanguage" | "tags" | "category" | "archived" | "isPublic" | "shareId" | "aiSummary" | "aiActionItems" | "suggestedTitle" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
 export type NoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   aiUsages?: boolean | Prisma.Note$aiUsagesArgs<ExtArgs>
@@ -950,6 +1025,8 @@ export type $NotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     userId: string
     title: string
     content: string
+    noteType: string
+    codeLanguage: string
     tags: string
     category: string
     archived: boolean
@@ -1389,6 +1466,8 @@ export interface NoteFieldRefs {
   readonly userId: Prisma.FieldRef<"Note", 'String'>
   readonly title: Prisma.FieldRef<"Note", 'String'>
   readonly content: Prisma.FieldRef<"Note", 'String'>
+  readonly noteType: Prisma.FieldRef<"Note", 'String'>
+  readonly codeLanguage: Prisma.FieldRef<"Note", 'String'>
   readonly tags: Prisma.FieldRef<"Note", 'String'>
   readonly category: Prisma.FieldRef<"Note", 'String'>
   readonly archived: Prisma.FieldRef<"Note", 'Boolean'>
@@ -1633,6 +1712,7 @@ export type NoteCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * The data used to create many Notes.
    */
   data: Prisma.NoteCreateManyInput | Prisma.NoteCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1651,6 +1731,7 @@ export type NoteCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many Notes.
    */
   data: Prisma.NoteCreateManyInput | Prisma.NoteCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

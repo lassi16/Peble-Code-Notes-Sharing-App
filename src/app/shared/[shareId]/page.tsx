@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Sparkles, Tag, User } from "lucide-react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
+import { renderCodeBlock, renderMarkdown } from "@/lib/markdown";
 import { parseActionItems, parseTags } from "@/lib/utils";
 
 export default async function SharedNotePage({
@@ -61,9 +62,19 @@ export default async function SharedNotePage({
           </div>
         )}
 
-        <div className="card mt-8 whitespace-pre-wrap p-6 text-sm leading-relaxed">
-          {note.content || <span className="text-[var(--muted)]">No content</span>}
-        </div>
+        {note.content ? (
+          <div
+            className="prose prose-sm card mt-8 p-6 leading-relaxed dark:prose-invert"
+            dangerouslySetInnerHTML={{
+              __html:
+                note.noteType === "code"
+                  ? renderCodeBlock(note.content, note.codeLanguage)
+                  : renderMarkdown(note.content),
+            }}
+          />
+        ) : (
+          <div className="card mt-8 p-6 text-sm text-[var(--muted)]">No content</div>
+        )}
 
         {note.aiSummary && (
           <section className="card mt-6 p-6">

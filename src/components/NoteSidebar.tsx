@@ -1,7 +1,7 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
-import { Archive, Plus, Search, Tag } from "lucide-react";
+import { Archive, Code2, Plus, Search, Tag } from "lucide-react";
 import type { NoteListItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -138,7 +138,15 @@ export function NoteSidebar({
                     : "hover:bg-[var(--bg)]"
                 )}
               >
-                <p className="truncate font-medium">{note.title}</p>
+                <div className="flex items-center gap-2">
+                  <p className="min-w-0 flex-1 truncate font-medium">{note.title}</p>
+                  {note.noteType === "code" && (
+                    <span className="flex shrink-0 items-center gap-1 rounded-md bg-[var(--primary)]/10 px-1.5 py-0.5 text-[10px] font-medium text-[var(--primary)]">
+                      <Code2 className="h-3 w-3" />
+                      {getLanguageLabel(note.codeLanguage)}
+                    </span>
+                  )}
+                </div>
                 <p className="mt-0.5 text-xs text-[var(--muted)]">
                   {formatDistanceToNow(new Date(note.updated_at), { addSuffix: true })}
                 </p>
@@ -161,4 +169,18 @@ export function NoteSidebar({
       </ul>
     </aside>
   );
+}
+
+function getLanguageLabel(language: string): string {
+  switch (language) {
+    case "cpp":
+      return "C++";
+    case "java":
+      return "Java";
+    case "html":
+      return "HTML";
+    case "python":
+    default:
+      return "Python";
+  }
 }

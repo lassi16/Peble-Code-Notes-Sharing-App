@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Archive,
   Check,
+  Code2,
   Copy,
   ExternalLink,
   Eye,
@@ -13,10 +14,13 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { renderCodeBlock, renderMarkdown } from "@/lib/markdown";
 
 interface NoteDetail {
   note_id: string;
   title: string;
+  noteType: "normal" | "code";
+  codeLanguage: string;
   content: string;
   tags: string[];
   category: string;
@@ -39,6 +43,7 @@ interface NoteEditorProps {
 export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [noteType, setNoteType] = useState<"normal" | "code">("normal");
   const [tagsInput, setTagsInput] = useState("");
   const [category, setCategory] = useState("general");
   const [saving, setSaving] = useState(false);
@@ -51,12 +56,16 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
   } | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [codeLanguage, setCodeLanguage] = useState("python");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (!note) return;
     setTitle(note.title);
     setContent(note.content);
+    setNoteType(note.noteType);
+    setCodeLanguage(note.codeLanguage || "python");
     setTagsInput(note.tags.join(", "));
     setCategory(note.category);
     setAiResult(
@@ -71,7 +80,7 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
   }, [note]);
 
   const save = useCallback(
-    async (patch: { title?: string; content?: string; tags?: string[]; category?: string }) => {
+    async (patch: Partial<NoteDetail>) => {
       if (!note) return;
       setSaving(true);
       setSaved(false);
@@ -87,7 +96,7 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
   );
 
   const scheduleSave = useCallback(
-    (patch: { title?: string; content?: string; tags?: string[]; category?: string }) => {
+    (patch: Partial<NoteDetail>) => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => save(patch), 800);
     },
@@ -132,6 +141,56 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
     setTimeout(() => setShareCopied(false), 2000);
   }
 
+  function insertCodeSection() {
+    const textarea = textareaRef.current;
+    const language = codeLanguage;
+    const sampleCode = getCodeSample(language);
+    const codeBlock = `\n\n\`\`\`${language}\n${sampleCode}\n\`\`\`\n`;
+
+    const start = textarea?.selectionStart ?? content.length;
+    const end = textarea?.selectionEnd ?? content.length;
+    const nextContent = `${content.slice(0, start)}${codeBlock}${content.slice(end)}`;
+
+    setPreview(false);
+    setContent(nextContent);
+    scheduleSave({
+      title,
+      content: nextContent,
+      tags: parseTags(tagsInput),
+      category,
+    });
+
+    window.setTimeout(() => {
+      textareaRef.current?.focus();
+      const cursorPosition = start + codeBlock.length;
+      textareaRef.current?.setSelectionRange(cursorPosition, cursorPosition);
+    }, 0);
+  }
+
+  function updateNoteType(nextType: "normal" | "code") {
+    setNoteType(nextType);
+    scheduleSave({
+      title,
+      content,
+      noteType: nextType,
+      codeLanguage,
+      tags: parseTags(tagsInput),
+      category,
+    });
+  }
+
+  function updateCodeLanguage(nextLanguage: string) {
+    setCodeLanguage(nextLanguage);
+    scheduleSave({
+      title,
+      content,
+      noteType,
+      codeLanguage: nextLanguage,
+      tags: parseTags(tagsInput),
+      category,
+    });
+  }
+
   if (!note) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
@@ -152,7 +211,14 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
           value={title}
           onChange={(e) => {
             setTitle(e.target.value);
-            scheduleSave({ title: e.target.value, content, tags: parseTags(tagsInput), category });
+            scheduleSave({
+              title: e.target.value,
+              content,
+              noteType,
+              codeLanguage,
+              tags: parseTags(tagsInput),
+              category,
+            });
           }}
           placeholder="Note title"
         />
@@ -207,6 +273,8 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
                 scheduleSave({
                   title,
                   content,
+                  noteType,
+                  codeLanguage,
                   tags: parseTags(e.target.value),
                   category,
                 });
@@ -217,7 +285,14 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);
-                scheduleSave({ title, content, tags: parseTags(tagsInput), category: e.target.value });
+                scheduleSave({
+                  title,
+                  content,
+                  noteType,
+                  codeLanguage,
+                  tags: parseTags(tagsInput),
+                  category: e.target.value,
+                });
               }}
             >
               {["general", "work", "personal", "ideas", "meetings"].map((c) => (
@@ -228,7 +303,27 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
             </select>
           </div>
 
-          <div className="mb-2 flex gap-2">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <div className="flex rounded-lg border border-[var(--border)] bg-[var(--surface)] p-1">
+              {[
+                ["normal", "Normal"],
+                ["code", "Code"],
+              ].map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => updateNoteType(value as "normal" | "code")}
+                  className={`flex items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                    noteType === value
+                      ? "bg-[var(--primary)] text-white"
+                      : "text-[var(--muted)] hover:bg-[var(--bg)]"
+                  }`}
+                >
+                  {value === "code" && <Code2 className="h-3 w-3" />}
+                  {label}
+                </button>
+              ))}
+            </div>
             <button
               type="button"
               onClick={() => setPreview(false)}
@@ -247,23 +342,67 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
             >
               <Eye className="h-3 w-3" /> Preview
             </button>
+            <div className="ml-auto flex items-center gap-2">
+              {(noteType === "code" || !preview) && (
+                <select
+                  className="input-field !w-28 !px-3 !py-1.5 text-xs"
+                  value={codeLanguage}
+                  onChange={(e) => updateCodeLanguage(e.target.value)}
+                  aria-label="Code language"
+                >
+                  {[
+                    ["python", "Python"],
+                    ["cpp", "C++"],
+                    ["java", "Java"],
+                    ["html", "HTML"],
+                  ].map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {noteType === "normal" && (
+                <button
+                  type="button"
+                  onClick={insertCodeSection}
+                  className="flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-[var(--muted)] transition hover:bg-[var(--bg)] hover:text-[var(--primary)]"
+                >
+                  <Code2 className="h-3 w-3" /> Code block
+                </button>
+              )}
+            </div>
           </div>
 
           {preview ? (
             <div
               className="prose prose-sm min-h-[300px] flex-1 overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+              dangerouslySetInnerHTML={{
+                __html:
+                  noteType === "code"
+                    ? renderCodeBlock(content, codeLanguage)
+                    : renderMarkdown(content),
+              }}
             />
           ) : (
             <textarea
-              className="min-h-[300px] flex-1 resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-sm leading-relaxed outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-purple-200"
-              placeholder="Start writing your note... (Markdown supported)"
+              ref={textareaRef}
+              className={`min-h-[300px] flex-1 resize-none rounded-xl border border-[var(--border)] bg-[var(--surface)] p-4 text-sm leading-relaxed outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-purple-200 ${
+                noteType === "code" ? "font-mono" : ""
+              }`}
+              placeholder={
+                noteType === "code"
+                  ? `Write ${getLanguageLabel(codeLanguage)} code...`
+                  : "Start writing your note... (Markdown supported)"
+              }
               value={content}
               onChange={(e) => {
                 setContent(e.target.value);
                 scheduleSave({
                   title,
                   content: e.target.value,
+                  noteType,
+                  codeLanguage,
                   tags: parseTags(tagsInput),
                   category,
                 });
@@ -305,7 +444,14 @@ export function NoteEditor({ note, onUpdate, onDelete, onRefresh }: NoteEditorPr
                     className="mt-2 text-xs text-[var(--primary)] hover:underline"
                     onClick={() => {
                       setTitle(aiResult.suggested_title);
-                      save({ title: aiResult.suggested_title, content, tags: parseTags(tagsInput), category });
+                      save({
+                        title: aiResult.suggested_title,
+                        content,
+                        noteType,
+                        codeLanguage,
+                        tags: parseTags(tagsInput),
+                        category,
+                      });
                     }}
                   >
                     Apply title
@@ -355,17 +501,30 @@ function parseTags(input: string): string[] {
     .filter(Boolean);
 }
 
-function renderMarkdown(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
-    .replace(/\n/g, "<br />");
+function getCodeSample(language: string): string {
+  switch (language) {
+    case "cpp":
+      return '#include <iostream>\n\nint main() {\n  std::cout << "Hello, Peblo!";\n  return 0;\n}';
+    case "java":
+      return 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, Peblo!");\n  }\n}';
+    case "html":
+      return '<section>\n  <h1>Hello, Peblo!</h1>\n</section>';
+    case "python":
+    default:
+      return 'print("Hello, Peblo!")';
+  }
+}
+
+function getLanguageLabel(language: string): string {
+  switch (language) {
+    case "cpp":
+      return "C++";
+    case "java":
+      return "Java";
+    case "html":
+      return "HTML";
+    case "python":
+    default:
+      return "Python";
+  }
 }

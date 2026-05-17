@@ -7,6 +7,8 @@ export interface UserPublic {
 export interface NoteListItem {
   note_id: string;
   title: string;
+  noteType: "normal" | "code";
+  codeLanguage: string;
   tags: string[];
   category: string;
   archived: boolean;

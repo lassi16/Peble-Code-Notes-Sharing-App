@@ -8,7 +8,10 @@ export function isAiConfigured(): boolean {
 function getClient(): OpenAI {
   const apiKey = process.env.LLM_API_KEY;
   if (!apiKey) throw new Error("LLM_API_KEY is not configured");
-  return new OpenAI({ apiKey });
+  return new OpenAI({
+    apiKey,
+    baseURL: getBaseUrl(),
+  });
 }
 
 export async function generateNoteInsights(
@@ -21,7 +24,7 @@ export async function generateNoteInsights(
 
   const client = getClient();
   const response = await client.chat.completions.create({
-    model: process.env.LLM_MODEL ?? "gpt-4o-mini",
+    model: getModel(),
     temperature: 0.4,
     response_format: { type: "json_object" },
     messages: [
@@ -50,6 +53,17 @@ export async function generateNoteInsights(
       : [],
     suggested_title: parsed.suggested_title ?? title ?? "Untitled Note",
   };
+}
+
+function getModel(): string {
+  return process.env.LLM_MODEL ?? "gemini-2.5-flash";
+}
+
+function getBaseUrl(): string | undefined {
+  if (process.env.LLM_BASE_URL) return process.env.LLM_BASE_URL;
+  return getModel().startsWith("gemini-")
+    ? "https://generativelanguage.googleapis.com/v1beta/openai/"
+    : undefined;
 }
 
 function getMockAiOutput(content: string, title?: string): AiOutput {

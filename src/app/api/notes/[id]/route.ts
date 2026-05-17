@@ -45,6 +45,8 @@ export async function PATCH(request: Request, { params }: Params) {
 
   if (body.title !== undefined) data.title = String(body.title).trim() || "Untitled";
   if (body.content !== undefined) data.content = String(body.content);
+  if (body.noteType !== undefined) data.noteType = body.noteType === "code" ? "code" : "normal";
+  if (body.codeLanguage !== undefined) data.codeLanguage = normalizeCodeLanguage(body.codeLanguage);
   if (body.category !== undefined) data.category = String(body.category).trim() || "general";
   if (body.archived !== undefined) data.archived = Boolean(body.archived);
   if (body.tags !== undefined) data.tags = stringifyTags(body.tags);
@@ -85,4 +87,8 @@ export async function DELETE(_request: Request, { params }: Params) {
 
   await prisma.note.delete({ where: { id } });
   return NextResponse.json({ success: true });
+}
+
+function normalizeCodeLanguage(value: unknown): string {
+  return ["python", "cpp", "java", "html"].includes(String(value)) ? String(value) : "python";
 }

@@ -2,6 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import type { UserPublic } from "./types";
+import { prisma } from "./db";
 
 const COOKIE_NAME = "peblo_session";
 const EXPIRY = "7d";
@@ -67,7 +68,25 @@ export async function getSessionUser(): Promise<UserPublic | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
-  return verifyToken(token);
+
+  const fromToken = await verifyToken(token);
+  if (!fromToken) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: fromToken.id },
+    select: { id: true, name: true, email: true },
+  });
+
+  return user ?? null;
+}
+
+export async function getUserId(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+  if (!token) return null;
+
+  const fromToken = await verifyToken(token);
+  return fromToken?.id ?? null;
 }
 
 export { COOKIE_NAME };

@@ -6,6 +6,8 @@ export function toNoteListItem(note: Note): NoteListItem {
   return {
     note_id: note.id,
     title: note.title,
+    noteType: note.noteType === "code" ? "code" : "normal",
+    codeLanguage: note.codeLanguage || "python",
     tags: parseTags(note.tags),
     category: note.category,
     archived: note.archived,

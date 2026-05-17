@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
@@ -23,6 +23,8 @@ model Note {
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   title          String    @default("Untitled")
   content        String    @default("")
+  noteType       String    @default("normal")
+  codeLanguage   String    @default("python")
   tags           String    @default("[]")
   category       String    @default("general")
   archived       Boolean   @default(false)
