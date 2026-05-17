@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  notes        Note[]
+  aiUsages     AiUsage[]
+}
+
+model Note {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String    @default("Untitled")
+  content        String    @default("")
+  tags           String    @default("[]")
+  category       String    @default("general")
+  archived       Boolean   @default(false)
+  isPublic       Boolean   @default(false)
+  shareId        String?   @unique
+  aiSummary      String?
+  aiActionItems  String?
+  suggestedTitle String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  aiUsages       AiUsage[]
+
+  @@index([userId])
+  @@index([updatedAt])
+  @@index([shareId])
+}
+
+model AiUsage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noteId    String?
+  note      Note?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  type      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+}

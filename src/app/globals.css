@@ -3,25 +3,77 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #f8f6ff;
+  --surface: #ffffff;
+  --text: #1a1633;
+  --muted: #6b6580;
+  --primary: #6c4ce8;
+  --primary-dark: #5538d4;
+  --accent: #ff6b6b;
+  --accent-teal: #2dd4bf;
+  --border: #e8e4f5;
+  --shadow: 0 8px 30px rgba(108, 76, 232, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not(.light) {
+    --bg: #0f0d1a;
+    --surface: #1a1730;
+    --text: #f3f0ff;
+    --muted: #a39bb8;
+    --primary: #8b72ff;
+    --primary-dark: #6c4ce8;
+    --accent: #ff8a8a;
+    --accent-teal: #5eead4;
+    --border: #2d2845;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+html.dark {
+  --bg: #0f0d1a;
+  --surface: #1a1730;
+  --text: #f3f0ff;
+  --muted: #a39bb8;
+  --primary: #8b72ff;
+  --primary-dark: #6c4ce8;
+  --accent: #ff8a8a;
+  --accent-teal: #5eead4;
+  --border: #2d2845;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+html.light {
+  --bg: #f8f6ff;
+  --surface: #ffffff;
+  --text: #1a1633;
+  --muted: #6b6580;
+  --primary: #6c4ce8;
+  --primary-dark: #5538d4;
+  --accent: #ff6b6b;
+  --accent-teal: #2dd4bf;
+  --border: #e8e4f5;
+  --shadow: 0 8px 30px rgba(108, 76, 232, 0.08);
+}
+
+body {
+  color: var(--text);
+  background: var(--bg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--primary-dark)] disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm font-medium transition hover:border-[var(--primary)] hover:text-[var(--primary)];
+  }
+  .input-field {
+    @apply w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5 text-sm outline-none transition focus:border-[var(--primary)] focus:ring-2;
+    --tw-ring-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  }
+  .card {
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow)];
   }
 }
